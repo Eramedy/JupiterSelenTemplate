@@ -1,0 +1,3 @@
+mkdir -p /etc/selenoid/; \
+echo '%config.json%' > /etc/selenoid/browsers.json; \
+/usr/bin/selenoid -listen :4444 -service-startup-timeout 10m -session-attempt-timeout 10m -conf /etc/selenoid/browsers.json -video-output-dir /opt/selenoid/video/ -timeout 10m -limit %limit%;

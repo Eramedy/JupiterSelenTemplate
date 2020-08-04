@@ -1,0 +1,8 @@
+.gradle
+logs
+/allure-results/
+/out/
+/.allure/
+/build
+/appium.log
+/src/main/resources/app.properties
