@@ -42,7 +42,7 @@ class DockerDriverHandler(override val type: BrowserType, version: String) : Abs
         config.browserCapabilities(capabilities)
         config.browser(type.name.toLowerCase())
         config.remote("http://${Config.dockerAddress}:${Config.dockerPort}/wd/hub")
-
+        log.info("Docker address {}, port {}, record video {}", Config.dockerAddress, Config.dockerPort, Config.enableVideo)
         return config
     }
 

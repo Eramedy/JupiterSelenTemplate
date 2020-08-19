@@ -20,8 +20,11 @@ object Config {
         if (resourceAsStream != null) config.addConfiguration(Configurations().properties(resourceAsStream))
     }
 
+    val dockerAddress: String =
+            config.get(String::class.java, "docker.sel.address", "192.168.244.130")
+
     val dockSocket: String =
-            config.get(String::class.java, "docker.socket", "tcp://192.168.244.130:2375")
+            config.get(String::class.java, "docker.socket", "tcp://${dockerAddress}:2375")
 
     val enableVideo: Boolean =
             config.get(Boolean::class.java, "docker.video.record", true)
@@ -56,9 +59,6 @@ object Config {
     val selenoidVideoImage: String =
             config.get(String::class.java, "driver.selenoid.video.image",
                     "selenoid/video-recorder:latest-release")
-
-    val dockerAddress: String =
-            config.get(String::class.java, "docker.sel.address", "localhost")
 
     val selenoidUIImage: String =
             config.get(String::class.java, "driver.selenoid.ui.image",

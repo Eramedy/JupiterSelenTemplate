@@ -18,7 +18,7 @@ abstract class AbstractDriverHandler {
             return (getDriver().webDriver as RemoteWebDriver).sessionId
         }
 
-    private val log: Logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
+    protected val log: Logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass())
     abstract val type: BrowserType
     abstract val version: String
     abstract val driverSetup: AbstractDriverSetup
@@ -27,7 +27,7 @@ abstract class AbstractDriverHandler {
     fun createDriver() {
         driverSetup.setup()
 
-        log.info("Configure driver: {} {}", type, version)
+        log.info("Configuring driver: {} {}", type, version)
         val config = getSelenideConfig()
         config.timeout(Config.defaultTimeout)
         driver = SelenideDriver(config)
