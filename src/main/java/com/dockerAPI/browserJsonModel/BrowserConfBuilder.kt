@@ -106,10 +106,10 @@ object BrowserConfBuilder {
         }
 
         val browsers = BrowserConf()
-        val chromeBiggestVersion = chromeVersions.maxBy { BigDecimal(it.key) }
+        val chromeBiggestVersion = chromeVersions.maxByOrNull { BigDecimal(it.key) }
         if (chromeBiggestVersion != null) browsers.chrome = Chrome(chromeBiggestVersion.key, chromeVersions)
 
-        val firefoxBiggestVersion = firefoxVersions.maxBy { BigDecimal(it.key) }
+        val firefoxBiggestVersion = firefoxVersions.maxByOrNull { BigDecimal(it.key) }
         if (firefoxBiggestVersion != null) browsers.firefox = Firefox(firefoxBiggestVersion.key, firefoxVersions)
 
         return browsers
