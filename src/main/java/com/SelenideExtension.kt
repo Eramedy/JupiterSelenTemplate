@@ -1,8 +1,6 @@
 package com
 
-import com.codeborne.selenide.Configuration
-import com.codeborne.selenide.Selenide
-import com.codeborne.selenide.WebDriverRunner
+import com.codeborne.selenide.SelenideDriver
 import com.config.Config
 import com.handlers.AbstractDriverHandler
 import com.handlers.andr.LocalAppiumDriverHandler
@@ -12,10 +10,10 @@ import io.qameta.allure.Allure
 import io.qameta.allure.Attachment
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.extension.AfterEachCallback
-import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL
-import org.openqa.selenium.remote.RemoteWebDriver
+import org.junit.jupiter.api.extension.ParameterContext
+import org.junit.jupiter.api.extension.ParameterResolver
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileNotFoundException
@@ -26,13 +24,17 @@ import java.net.URLConnection
 import java.util.*
 
 
-class UIExtension : /*ParameterResolver,*/ BeforeEachCallback, AfterEachCallback, ExtensionContext.Store.CloseableResource {
+class SelenideExtension : ParameterResolver, AfterEachCallback, ExtensionContext.Store.CloseableResource {
     private val log = LoggerFactory.getLogger(lookup().lookupClass())
     private var started = false
     private lateinit var driverHandler: AbstractDriverHandler
 
-    @Synchronized
-    override fun beforeEach(context: ExtensionContext) {
+    override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean {
+        val paramClass = parameterContext.parameter.type
+        return paramClass == SelenideDriver::class.java
+    }
+
+    override fun resolveParameter(parameterContext: ParameterContext, context: ExtensionContext): SelenideDriver {
         // next line to com.UIExtension.close could work
         if (!started) {
             context.root.getStore(GLOBAL).put("unique name", this); started = true
@@ -49,7 +51,6 @@ class UIExtension : /*ParameterResolver,*/ BeforeEachCallback, AfterEachCallback
                 } else {
                     Pair(Config.driverType, Config.driverVersion)
                 }
-        Configuration.timeout = 5000
         driverHandler =
                 if (Config.localTest) {
                     if (appiumTest)
@@ -62,12 +63,12 @@ class UIExtension : /*ParameterResolver,*/ BeforeEachCallback, AfterEachCallback
                     else
                         DockerDriverHandler(driverType, driverVersion)
                 }
-
-        driverHandler.prepareDriver()
+        driverHandler.createDriver()
+        return driverHandler.getDriver()
     }
 
     override fun afterEach(context: ExtensionContext) {
-        val sessionID = (WebDriverRunner.getWebDriver() as RemoteWebDriver).sessionId.toString()
+        val sessionID = driverHandler.sessionID.toString()
         val testFailed = context.executionException.isPresent
         if (testFailed) {
             screen()
@@ -86,7 +87,7 @@ class UIExtension : /*ParameterResolver,*/ BeforeEachCallback, AfterEachCallback
 
     @Attachment(type = "image/png")
     fun screen(): ByteArray {
-        val screenshots: String = Selenide.screenshot("screen" + Random().nextInt())!!
+        val screenshots: String = driverHandler.getDriver().screenshot("screen" + Random().nextInt())!!
         log.info("Screen: {}", screenshots)
         return FileUtils.readFileToByteArray(File(screenshots))
     }

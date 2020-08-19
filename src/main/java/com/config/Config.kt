@@ -72,4 +72,7 @@ object Config {
 
     val mobileChromeVersion: String =
             config.get(String::class.java, "driver.mobile.version", "84.0.4147.30")
+
+    val defaultTimeout: Long =
+            config.get(Long::class.java, "selenide.default.timeout", 20_000)
 }

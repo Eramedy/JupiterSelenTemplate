@@ -1,38 +1,40 @@
 package com
 
-import com.codeborne.selenide.Condition
-import com.codeborne.selenide.Condition.*
-import com.codeborne.selenide.Selectors.byText
-import com.codeborne.selenide.Selenide.*
+import com.codeborne.selenide.Condition.text
+import com.codeborne.selenide.SelenideDriver
+import com.util.waitPageComplete
 import io.qameta.allure.Step
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.openqa.selenium.By
 
 
-@ExtendWith(UIExtension::class)
+@ExtendWith(SelenideExtension::class)
 class First {
 
-    @Test
-    fun uiTest() {
-        open()
-        sleep(20000)
-        step1()
-    }
+    private lateinit var driver: SelenideDriver
 
-    @Step("step1")
-    private fun step1() {
-        val element = element(".dropdown-login")
-        element.click()
-        element.findAll(".dropdown-menu a").findBy(text("Login")).click()
-        element("[name='username']").sendKeys("user@phptravels.com")
-        element("[name='password']").sendKeys("demouser")
-        element("[type='submit']").click()
-        element(".container").shouldHave(text("Hi, Demo User"))
+    @Test
+    fun uiTest(driver: SelenideDriver) {
+        this.driver = driver
+        open()
+        step1()
     }
 
     @Step("Here we go")
     private fun open() {
-        open("https://www.phptravels.net/")
+        driver.open("https://www.phptravels.net/home")
+
+        waitPageComplete(driver)
+    }
+
+    @Step("step1")
+    private fun step1() {
+        val element = driver.find(".dropdown-login")
+        element.click()
+        element.findAll(".dropdown-menu a").findBy(text("Login")).click()
+        driver.find("[name='username']").sendKeys("user@phptravels.com")
+        driver.find("[name='password']").sendKeys("demouser")
+        driver.find("[type='submit']").click()
+        driver.find(".container").shouldHave(text("Hi, Demo User"))
     }
 }

@@ -1,6 +1,7 @@
 package com.handlers.andr
 
-import com.codeborne.selenide.Configuration
+
+import com.codeborne.selenide.SelenideConfig
 import com.codeborne.selenide.WebDriverProvider
 import com.config.BrowserType
 import com.handlers.AbstractDriverHandler
@@ -16,10 +17,15 @@ class LocalAppiumDriverHandler : AbstractDriverHandler() {
     override val version: String = "default"
     override val driverSetup = LocalAppiumDriverSetup
 
-    override fun config() {
-        Configuration.browser = AndroidDriverProvider::class.java.name
+    override fun getSelenideConfig(): SelenideConfig {
+        val config = SelenideConfig()
+        config.browser(AndroidDriverProvider::class.java.name)
         val url = driverSetup.getAppiumUrl()
-        Configuration.browserCapabilities.setCapability("appiumUrl", url)
+        config.browserCapabilities().setCapability("appiumUrl", url)
+        config.startMaximized(false)
+        config.browserSize(null)
+
+        return config
     }
 
     override fun closeEnvironment() {
@@ -33,8 +39,6 @@ private class AndroidDriverProvider : WebDriverProvider {
         desiredCapabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Android Emulator")
         desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "UIAutomator2")
         desiredCapabilities.setCapability(MobileCapabilityType.BROWSER_NAME, "Chrome")
-        Configuration.startMaximized = false
-        Configuration.browserSize = null
 
         val url: URL = desiredCapabilities.getCapability("appiumUrl") as URL
         return AndroidDriver<AndroidElement>(url, desiredCapabilities)

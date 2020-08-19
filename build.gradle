@@ -12,7 +12,6 @@ repositories {
 }
 
 ext {
-    logback = '1.2.3'
     retrofitVersion = '2.9.0'
     junitjupiter = '5.6.2'
     allureVersion = '2.13.5'
@@ -36,10 +35,19 @@ test {
 }
 
 dependencies {
-    implementation('com.codeborne:selenide:5.13.1')
+    // https://mvnrepository.com/artifact/com.codeborne/selenide
+    implementation group: 'com.codeborne', name: 'selenide', version: '5.14.0'
+
+    // https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager
     implementation(group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.1.0')
+
+    // https://mvnrepository.com/artifact/io.appium/java-client
     implementation(group: 'io.appium', name: 'java-client', version: '7.3.0')
-    implementation("ch.qos.logback:logback-classic:${logback}")
+
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    implementation("ch.qos.logback:logback-classic:1.2.3")
+
+    // https://mvnrepository.com/artifact/com.github.docker-java/docker-java
     implementation(group: 'com.github.docker-java', name: 'docker-java', version: '3.2.5')
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.7.2'
     implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: retrofitVersion
@@ -50,12 +58,18 @@ dependencies {
     implementation group: 'io.appium', name: 'java-client', version: '7.3.0'
     implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.5'
     testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: '2.2'
+
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
     implementation("org.junit.jupiter:junit-jupiter-api:${junitjupiter}")
+
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
     implementation("org.junit.jupiter:junit-jupiter-params:${junitjupiter}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitjupiter}")
+
     implementation("io.qameta.allure:allure-selenide:${allureVersion}") {
         exclude group: 'org.junit.jupiter'
     }
+
     implementation("io.qameta.allure:allure-junit5:${allureVersion}") {
         exclude group: 'org.junit.jupiter'
     }

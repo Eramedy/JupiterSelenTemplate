@@ -1,7 +1,7 @@
 package com.handlers.desk
 
 import com.SelenoidHelper
-import com.codeborne.selenide.Configuration
+import com.codeborne.selenide.SelenideConfig
 import com.config.BrowserType
 import com.config.Config
 import com.dockerAPI.browserJsonModel.BrowserConf
@@ -24,19 +24,26 @@ class DockerDriverHandler(override val type: BrowserType, version: String) : Abs
         return get.default
     }
 
-    override fun config() {
-        Configuration.startMaximized = true
-        val capabilities = DesiredCapabilities()
-        Configuration.browserVersion = version
-        capabilities.setCapability("enableVNC", true)
-        capabilities.setCapability("enableVideo", Config.enableVideo)
-        Configuration.browserCapabilities = capabilities
-        Configuration.browser = type.name.toLowerCase()
-        Configuration.remote = "http://${Config.dockerAddress}:${Config.dockerPort}/wd/hub"
+    private fun prepareDriverImage() {
         val conf = BrowserConfBuilder.instance()
 
         val image = resolveImageName(conf, type, version)
         SelenoidHelper.pullContainer(image)
+    }
+
+    override fun getSelenideConfig(): SelenideConfig {
+        prepareDriverImage()
+        val config = SelenideConfig()
+        config.startMaximized(true)
+        val capabilities = DesiredCapabilities()
+        config.browserVersion(version)
+        capabilities.setCapability("enableVNC", true)
+        capabilities.setCapability("enableVideo", Config.enableVideo)
+        config.browserCapabilities(capabilities)
+        config.browser(type.name.toLowerCase())
+        config.remote("http://${Config.dockerAddress}:${Config.dockerPort}/wd/hub")
+
+        return config
     }
 
     private fun resolveImageName(conf: BrowserConf, browserType: BrowserType, version: String): String {
