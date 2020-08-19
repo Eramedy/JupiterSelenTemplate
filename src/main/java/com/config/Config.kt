@@ -21,7 +21,7 @@ object Config {
     }
 
     val dockSocket: String =
-            config.get(String::class.java, "docker.socket", "/var/run/docker.sock")
+            config.get(String::class.java, "docker.socket", "tcp://192.168.244.130:2375")
 
     val enableVideo: Boolean =
             config.get(Boolean::class.java, "docker.video.record", true)

@@ -28,7 +28,7 @@ object SelenoidHelper {
             JerseyDockerHttpClient.Builder()
                     .dockerHost(URI(Config.dockSocket))
                     .build()
-    ).build()
+    ).build().also { log.info("Docker client on socket {} created.", Config.dockSocket) }
 
     init {
         if (!InetAddress.getByName(Config.dockerAddress).isReachable(2_000)) {
