@@ -142,6 +142,7 @@ object SelenoidHelper {
 
     private fun waitUntilDriversBeenClosed() {
         val startTime = System.currentTimeMillis()
+        val timeout = 45_000
         do {
             log.info("Check that drivers been closed")
             val list = client.listContainersCmd().exec()
@@ -150,6 +151,8 @@ object SelenoidHelper {
                         image.startsWith("selenoid/vnc:") || image.startsWith("selenoid/video-recorder:")
                     }) return
             sleep(3_000)
-        } while (startTime + 15_000 > System.currentTimeMillis())
+        } while (startTime + timeout > System.currentTimeMillis())
+
+        log.warn("Containers didn't stopped in {} milliseconds", timeout)
     }
 }
