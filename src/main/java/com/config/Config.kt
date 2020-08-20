@@ -27,7 +27,7 @@ object Config {
             config.get(String::class.java, "docker.socket", "tcp://${dockerAddress}:2375")
 
     val enableVideo: Boolean =
-            config.get(Boolean::class.java, "docker.video.record", true)
+            config.get(Boolean::class.java, "docker.video.record", false)
 
     val localTest: Boolean =
             config.get(Boolean::class.java, "execute.local", false)
