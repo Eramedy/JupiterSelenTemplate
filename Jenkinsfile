@@ -1,13 +1,24 @@
+properties(
+        [parameters([
+                string(defaultValue: '', description: '', name: 'Test', trim: true)
+        ])]
+)
+
 pipeline {
-    agent {
-        docker { image 'openjdk:14.0' }
-    }
+    agent any
 
     stages {
         stage('Tests') {
+            tools {
+                jdk "jdk13"
+            }
             steps {
                 script {
-                    sh './gradlew clean test'
+                    if (params.Test == '') {
+                        sh './gradlew clean test'
+                    } else {
+                        sh "./gradlew clean test -Dtest=${params.Test}"
+                    }
                 }
             }
         }
