@@ -2,7 +2,6 @@ package com.handlers
 
 import com.codeborne.selenide.SelenideConfig
 import com.codeborne.selenide.SelenideDriver
-import com.codeborne.selenide.WebDriverRunner
 import com.config.BrowserType
 import com.config.Config
 import org.openqa.selenium.remote.RemoteWebDriver
@@ -42,7 +41,7 @@ abstract class AbstractDriverHandler {
     }
 
     fun close() {
-        WebDriverRunner.closeWebDriver()
+        driver?.close()
     }
 
     abstract fun closeEnvironment()
