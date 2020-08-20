@@ -1,6 +1,7 @@
 properties(
         [parameters([
-                string(defaultValue: '', description: '', name: 'Test', trim: true)
+                string(defaultValue: '', description: '', name: 'Test', trim: true),
+                string(defaultValue: '', description: 'Additional options', name: 'AddOpts', trim: true)
         ])]
 )
 
@@ -14,11 +15,15 @@ pipeline {
             }
             steps {
                 script {
-                    if (params.Test == '') {
-                        sh './gradlew clean test'
-                    } else {
-                        sh "./gradlew clean test -Dtest=${params.Test}"
+                    def command = "./gradlew clean test"
+                    if (params.Test != '') {
+                        command += "  --tests ${params.Test}"
                     }
+                    if (params.AddOpts != '') {
+                        command += " ${params.Test}"
+                    }
+
+                    sh command
                 }
             }
         }
