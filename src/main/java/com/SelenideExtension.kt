@@ -68,20 +68,22 @@ class SelenideExtension : ParameterResolver, AfterEachCallback, ExtensionContext
     }
 
     override fun afterEach(context: ExtensionContext) {
-        val sessionID = driverHandler.sessionID.toString()
-        val testFailed = context.executionException.isPresent
-        if (testFailed) {
-            screen()
-        }
-        driverHandler.close()
-        if (!Config.localTest && Config.enableVideo) {
-            log.info("Video processing")
+        if (driverHandler.driverCreated) {
+            val sessionID = driverHandler.sessionID.toString()
+            val testFailed = context.executionException.isPresent
             if (testFailed) {
-                log.info("Test was failed. Attaching video.")
-                attachVideo(sessionID)
+                screen()
             }
-            log.info("Delete video on docker host machine.")
-            deleteVideoFile(sessionID)
+            driverHandler.close()
+            if (!Config.localTest && Config.enableVideo) {
+                log.info("Video processing")
+                if (testFailed) {
+                    log.info("Test was failed. Attaching video.")
+                    attachVideo(sessionID)
+                }
+                log.info("Delete video on docker host machine.")
+                deleteVideoFile(sessionID)
+            }
         }
     }
 

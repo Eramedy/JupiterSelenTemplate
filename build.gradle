@@ -88,13 +88,13 @@ clean {
 compileKotlin {
     //noinspection GrUnresolvedAccess
     kotlinOptions {
-        jvmTarget = "13"
+        jvmTarget = "11"
     }
 }
 
 compileTestKotlin {
     //noinspection GrUnresolvedAccess
     kotlinOptions {
-        jvmTarget = "13"
+        jvmTarget = "11"
     }
 }

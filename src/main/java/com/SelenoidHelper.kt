@@ -9,12 +9,10 @@ import com.github.dockerjava.api.model.Bind
 import com.github.dockerjava.api.model.HostConfig
 import com.github.dockerjava.api.model.PortBinding
 import com.github.dockerjava.core.DockerClientBuilder
-import com.github.dockerjava.jaxrs.JerseyDockerHttpClient
 import org.slf4j.LoggerFactory
 import java.lang.Thread.sleep
 import java.lang.invoke.MethodHandles
 import java.net.InetAddress
-import java.net.URI
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -24,11 +22,12 @@ object SelenoidHelper {
     private const val selenoidContainerName = "selenoid"
     private const val selenoidUIContainerName = "selenoid-ui"
 
-    private val client: DockerClient = DockerClientBuilder.getInstance().withDockerHttpClient(
-            JerseyDockerHttpClient.Builder()
-                    .dockerHost(URI(Config.dockSocket))
-                    .build()
-    ).build().also { log.info("Docker client on socket {} created.", Config.dockSocket) }
+    private val client: DockerClient = DockerClientBuilder.getInstance().build()
+//            DockerClientBuilder.getInstance().withDockerHttpClient(
+//            JerseyDockerHttpClient.Builder()
+//                    .dockerHost(URI(Config.dockSocket))
+//                    .build()
+//    ).build().also { log.info("Docker client on socket {} created.", Config.dockSocket) }
 
     init {
         if (!InetAddress.getByName(Config.dockerAddress).isReachable(2_000)) {

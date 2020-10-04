@@ -12,6 +12,10 @@ import java.lang.invoke.MethodHandles
 
 abstract class AbstractDriverHandler {
     private var driver: SelenideDriver? = null
+
+    val driverCreated: Boolean
+        get() = driver != null
+
     val sessionID: SessionId
         get() {
             return (getDriver().webDriver as RemoteWebDriver).sessionId

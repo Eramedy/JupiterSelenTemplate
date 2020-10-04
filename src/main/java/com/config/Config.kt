@@ -20,11 +20,11 @@ object Config {
         if (resourceAsStream != null) config.addConfiguration(Configurations().properties(resourceAsStream))
     }
 
-    val dockerAddress: String =
-            config.get(String::class.java, "docker.sel.address", "192.168.244.130")
+    val dockerAddress: String? =
+            config.get(String::class.java, "docker.sel.address", null)
 
     val dockSocket: String =
-            config.get(String::class.java, "docker.socket", "tcp://${dockerAddress}:2375")
+            config.get(String::class.java, "docker.socket", "/var/run/docker.sock")
 
     val enableVideo: Boolean =
             config.get(Boolean::class.java, "docker.video.record", false)
